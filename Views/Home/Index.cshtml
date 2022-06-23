@@ -1,0 +1,156 @@
+﻿@model List<Customer>
+@{
+    ViewData["Title"] = "Home Page";
+    List<finalSerbestPiyasaDoviz.Models._Doviz> dovizler = ViewBag.dovizler as List<finalSerbestPiyasaDoviz.Models._Doviz>; // as ile model i seçiyoruz ki aşağıda foreach işleminde Unit, Isim, CurrenyName gibi değerleri intellisense özelliği ile görebilelim.
+}
+ <div class="tradingview-widget-container"> 
+        <div class="tradingview-widget-container__widget"></div>   
+         
+              <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+              {
+              "symbols": [
+                {
+                  "proName": "OANDA:SPX500USD",
+                  "title": "SP 500"
+                },
+                {
+                  "proName": "FX_IDC:EURUSD",
+                  "title": "EUR/USD"
+                },
+                {
+                  "proName": "BITSTAMP:BTCUSD",
+                  "title": "BTC/USD"
+                },
+                {
+                  "proName": "BITSTAMP:ETHUSD",
+                  "title": "ETH/USD"
+                }
+              ],
+              "colorTheme": "light",
+              "isTransparent": true,
+              "displayMode": "adaptive",
+              "locale": "tr"
+            }
+           </script> 
+           </div>
+
+<!--DÖVİZ ÇEVİRİCİ-->
+   <div class="section">
+  <div class="kurlar">
+     <div id="kurlar"></div>
+     <script async src="https://dovizmix.com/dovizmix/js/dovizwidget.min.js" type="text/javascript" charset="utf-8" ></script>
+    </div>
+
+   
+ <div class="wrapper">
+      <header>Döviz Çevirici</header>
+      <form action="#">
+        <div class="amount">
+          <p>Miktarı girin</p>
+          <input type="text" value="1">
+        </div>
+        <div class="drop-list">
+          <div class="from">
+            
+            <div class="select-box">
+              <img src="https://flagcdn.com/48x36/us.png" alt="flag">
+              <select> <!-- Options tag are inserted from JavaScript --> </select>
+            </div>
+          </div>
+          <div class="icon"><i class="fas fa-exchange-alt"></i></div>
+          <div class="to">
+            
+            <div class="select-box">
+              <img src="https://flagcdn.com/48x36/np.png" alt="flag">
+              <select> <!-- Options tag are inserted from JavaScript --> </select>
+            </div>
+          </div>
+        </div>
+        <div class="exchange-rate">Döviz Kuru Hesaplanıyor</div>
+        <button class="doviz-hesapla">Döviz Kurunu Hesapla</button>
+      </form>
+    </div>
+    <script src="js/country-list.js"></script>
+    <script src="js/site.js"></script>
+  
+   
+
+  
+  
+    </div>
+<!--DÖVİZ KUR TABLO-->
+
+<div class="text-center">
+    <table width="100%">
+    <thead>
+        <tr>
+            <th>Döviz Kodu<br />Currency Code</th>
+            <th>Birim<br />Unit</th>
+            <th>Döviz Cinsi<br />Currency</th>
+            <th>Döviz Alış<br />Forex Buying</th>
+            <th>Döviz Satış<br />Forex Selling</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var d in dovizler)
+        {
+
+            if (d.CurrencyCode != "XDR")
+            {
+
+                string img = "http://www.tcmb.gov.tr/kurlar/kurlar_tr_dosyalar/images/" + d.CurrencyCode + ".gif";
+
+                <tr>
+                    <td>
+                        <img src="@img" />
+                        @d.CurrencyCode / TRY
+                    </td>
+                <td>@d.Unit</td>
+                    <td>@d.Isim</td>
+                    @*<td>@d.CurrencyName</td>*@
+                    <td>@d.ForexBuying</td>
+                    <td>@d.ForexSelling</td>
+                    @*@<td>@d.BanknoteBuying</td>
+                    <td>@d.BanknoteSelling</td>
+                    <td>@d.CrossRateUSD</td>
+                    <td>@d.CrossRateOther</td>*@
+                   
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+</div>
+
+<!--Customer-->
+<div class="DolarTahmini">
+
+<h2>Haftalık Dolar Kuru Tahmini</h2>
+<a asp-controller="Customer" asp-action="Add">Yeni Tahmin Ekle</a>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Kullanıcı Adı</th>
+            <th>Dolar Tahmin</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var customer in Model) {
+            <tr>
+            <td>@customer.UserName</td>
+            <td>@customer.DolarTahmin</td>
+
+            <td>
+                <a asp-controller="Customer" asp-action="Edit" asp-route-id="@customer.CustomerId">Edit</a>
+                <a asp-controller="Customer" asp-action="Delete" asp-route-id="@customer.CustomerId">Delete</a>
+            </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+</div>
+
+
